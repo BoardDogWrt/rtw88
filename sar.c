@@ -3,6 +3,13 @@
  */
 
 #include <linux/version.h>
+#include <linux/rfkill.h>
+
+#if defined(CPTCFG_KERNEL_CODE)
+#undef LINUX_VERSION_CODE
+#define LINUX_VERSION_CODE CPTCFG_KERNEL_CODE
+#endif
+
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 11, 0)
 #include "sar.h"
 #include "phy.h"

@@ -28,6 +28,11 @@
 #include <linux/etherdevice.h>
 #endif
 
+#if defined(CPTCFG_KERNEL_CODE)
+#undef LINUX_VERSION_CODE
+#define LINUX_VERSION_CODE CPTCFG_KERNEL_CODE
+#endif
+
 #if !defined(RHEL_RELEASE_CODE)
 #define RHEL_RELEASE_CODE 0
 #define RHEL_RELEASE_VERSION(a, b) a<<8 & b

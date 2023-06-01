@@ -23,6 +23,28 @@ ifeq ("","$(wildcard MOK.der)")
 NO_SKIP_SIGN := y
 endif
 
+ifneq ($(BACKPORT_DIR),)
+include $(BACKPORT_DIR)/versions
+
+ifeq ($(BACKPORTED_LINUX_VERSION_CODE),)
+$(error "BACKPORTED_LINUX_VERSION_CODE is undefined")
+endif
+
+NOSTDINC_FLAGS += \
+	-I$(BACKPORT_DIR)/backport-include/ \
+	-I$(BACKPORT_DIR)/backport-include/uapi \
+	-I$(BACKPORT_DIR)/include/ \
+	-I$(BACKPORT_DIR)/include/uapi \
+	-include backport/backport.h \
+	$(call backport-cc-disable-warning, unused-but-set-variable) \
+	-DCPTCFG_VERSION=\"$(BACKPORTS_VERSION)\" \
+	-DCPTCFG_KERNEL_VERSION=\"$(BACKPORTED_KERNEL_VERSION)\" \
+	-DCPTCFG_KERNEL_NAME=\"$(BACKPORTED_KERNEL_NAME)\" \
+	-DCPTCFG_KERNEL_CODE=$(BACKPORTED_LINUX_VERSION_CODE)
+
+KBUILD_EXTRA_SYMBOLS += $(BACKPORT_DIR)/Module.symvers
+endif
+
 EXTRA_CFLAGS += -O2
 EXTRA_CFLAGS += -DCONFIG_RTW88_8822BE=1
 EXTRA_CFLAGS += -DCONFIG_RTW88_8821CE=1
